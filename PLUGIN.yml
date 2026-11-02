@@ -1,0 +1,7 @@
+name: LibraryShare
+author: LibraryShare contributors
+description: Patron-to-patron lending integrated with Koha circulation
+date_authored: 2026-11-02
+date_updated: 2026-11-02
+minimum_version: 26.05
+version: 0.2.8

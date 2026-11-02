@@ -1,0 +1,215 @@
+LIBRARYSHARE / SERVICE GUIDE
+LibraryShare Patron Guide
+Borrow useful things. Lend items you own.
+Plugin 0.2.8 • Documentation date: November 2, 2026
+Keep this guide with your library’s current policies and local contact details.
+Read the launch limitations and checkout-timing warning before using the service.
+ 
+Contents — linked section index
+1. Welcome and important information
+2. Sign in and find your way around
+3. Borrower quick start
+4. Lender quick start
+5. Find and request an item
+6. Create, edit and manage your listing
+7. Add pickup availability
+8. Acceptance, pickup, return and cancellation
+9. Messages, notifications and wanted items
+10. Profiles, recognition and estimated savings
+11. Safety, help and common problems
+12. Your final checklists and glossary
+Select a section above, or use Word’s Navigation Pane to move between headings. Page numbers update when Word lays out the document.
+ 
+1. Welcome and important information
+LibraryShare helps library members lend their own items to one another. You might list a game, kitchen item or tool that your library permits. The item remains the lender's property, while Koha tracks the loan.
+The library decides who may participate, what items are allowed, where meetings may take place and how problems are handled. Ask staff for the approved service rules. This guide does not establish insurance, payment, replacement or compensation policies.
+CURRENT LIMITATION: Pickup scheduling has a reported problem that can produce no slots even when a lender expects open times. If this happens, ask staff for help. Do not assume the meeting is booked or the item is checked out. The library should confirm service readiness before inviting public use.
+IMPORTANT: When the lender uses “Book pickup & create checkout,” Koha records the checkout immediately—even if the pickup is scheduled for a later date. Agree on the handoff before this step.
+A pickup slot is a one-hour meeting window, not the length of the loan. A request is not a reservation guarantee, and acceptance is not yet checkout.
+What you need
+•	Your existing Koha library account and the library's public LibraryShare entry.
+•	Any eligibility required by your library, including a usable account without applicable restrictions.
+•	Agreement to the current service terms and waiver when prompted.
+•	For lending: an item you own, an accurate description, an estimated value and a permitted public pickup location.
+You do not need a staff account or a separate LibraryShare password. Never send a password or sign-in cookie to another member.
+ 
+2. Sign in and find your way around
+1. Open your library's public catalog and choose its “LibraryShare” link, or use the public address supplied by staff.
+2. Choose the Koha account/sign-in link and sign in using your normal library credentials.
+3. Return to LibraryShare. Automatic return is available in some configurations; otherwise choose the public LibraryShare link again.
+4. Check the signed-in name before posting or requesting anything.
+If the page asks for staff access, you may have opened the wrong site. Use the public catalog and ask staff to check the link. Do not ask for staff privileges.
+An expired session may require sign-in again. To finish on a shared computer, use the public Koha account's sign-out control, close the browser session and avoid leaving downloaded personal certificates behind. LibraryShare does not provide a separate password system.
+Main sections
+•	“Browse items”: search and open available listings.
+•	“Wanted”: post or find requests for things members would like to borrow.
+•	“My activity”: see your lending/borrowing requests, own listings and notifications.
+•	“Community”: view supported community totals, recognition and challenges.
+•	“My profile”: see your sharing record, preferences and supported rewards.
+•	“Help & agreements”: read service help, terms and waiver.
+•	“List an item”: create a listing for something you own.
+Administrative controls are for authorized staff. Their absence from an ordinary patron account is expected.
+ 
+3. Borrower quick start
+1. Sign in on the public site and open “Browse items.”
+2. Search or filter, then open an item's details. Read its condition, branch, meeting place and loan length.
+3. Choose “Request item.” Complete required agreements, add optional proposed dates and a message, then send the request.
+4. Open “My activity” to check its status. Avoid sending the same request repeatedly.
+5. Wait for the lender's decision and use the request's messages to agree on the handoff.
+6. The lender selects a valid pickup slot and books the pickup/checkout. Check the actual pickup time and due date shown.
+7. Meet as agreed, inspect the item together and follow the library's safety rules.
+8. Return the item as agreed. The lender confirms return; if staff check it in directly in Koha, the service may need reconciliation.
+Expected result: both members see the request progress from pending to accepted, then approved when booked, and returned when successfully completed.
+If no pickup slots are available, the request may still be submitted, but scheduling cannot be completed until a valid slot exists. Do not treat an accepted request or an informal message as proof of a recorded checkout.
+ 
+4. Lender quick start
+1. Sign in and choose “List an item.”
+2. Enter the item details, pickup branch, meeting place, loan length and estimated value. Add permitted photos if useful.
+3. Choose “Create listing.” Check “My activity” to confirm it was created.
+4. Open the item and choose “Add pickup availability.” Enter a date range and optional daily limits.
+5. Confirm that actual one-hour slots appear. If zero slots are created, follow chapter 7 rather than repeatedly submitting the same range.
+6. Review incoming requests in “My activity.” Accept a suitable request or decline it.
+7. Agree on the handoff, then use the accepted request's scheduling action to book a valid slot. Booking creates the Koha checkout immediately.
+8. After the borrower returns the item, confirm return using the request's return action.
+You remain responsible for accurately describing your item and confirming its physical return. Listing an item does not transfer ownership to the library.
+ 
+5. Find and request an item
+Browse and filters
+The top count shows available inventory across all branches. The separate matching-results count reflects your current search and filters. Up to 100 results are shown per search; narrow the search if necessary.
+Use the search text and available category, branch, condition, date or pickup-location filters, then choose “Apply filters.” Use “Clear” to remove filters. A nonmatching filter can hide an item even though the global count is positive.
+In this release, newly listed available items are not hidden from ordinary members for a credit-based waiting period. You do not need to earn sharing credits before seeing them. Paused, removed or currently checked-out items are not ordinary available inventory.
+Read the listing
+Review the description, photos, condition, branch, meeting place, loan length and estimated value. The value is not a borrowing fee or deposit. Ask questions through the request conversation when appropriate; do not assume accessories or supplies are included unless described.
+Send a request
+1. Choose “Request item.”
+2. Read and accept the current required agreements if prompted.
+3. Enter optional proposed start/end dates and a message to the lender.
+4. Choose “Send borrow request.”
+5. Confirm the request appears in “My activity” as pending.
+Proposed dates help the lender decide; they do not reserve a slot. The lender chooses the actual pickup during scheduling. You cannot request your own item or submit another active request for the same item under the same account.
+Your account may be blocked from requesting because of overdue items, account expiry, a lost-card flag or another circulation restriction. Contact library staff rather than trying another person's account.
+ 
+6. Create, edit and manage your listing
+Listing fields
+•	Item name: a clear, recognizable title.
+•	Maker or author: optional identifying information.
+•	Category: a useful category such as games or tools, following library guidance.
+•	Condition: Excellent, Good or Fair. Describe specific defects honestly.
+•	Pickup branch: the participating branch whose hours govern pickup availability.
+•	Pickup location: a library-approved public meeting place.
+•	Loan length (days): your normal loan length, within the permitted range.
+•	Estimated item value ($): your current estimate, not a fee. A real $0 value is allowed; do not confuse it with a missing value.
+•	Description: explain what is included, size or compatibility, condition, care instructions and anything the borrower should know.
+•	Item photos: optional JPEG, PNG or WebP images you have permission to share.
+Use “Create listing” to save. Creating the listing also creates a Koha catalog record and item for circulation tracking.
+Photos
+Each photo may be up to 5 MB; up to six are supported per listing or review. Use clear item photographs without addresses, library cards, private documents or people who have not consented.
+If upload fails, check whether the listing was already created. Open it from “My activity” before trying to create another listing. Use the available photo upload/removal controls to correct images, and ask staff if the server rejects a valid file.
+Editing and availability
+Open your listing and choose “Edit listing” to change supported details. Use “Pause,” “Resume” and “Remove” in “My activity” to manage the listing. Do not remove and recreate an item to escape an existing loan.
+Changing the normal loan length does not change the due date of an existing checkout. Changing the estimated value may recalculate historical estimated savings.
+Your available item should be visible to another patron immediately. If it is not, check filters and whether it is paused or checked out, then ask staff to check the installed release and item status.
+ 
+7. Add pickup availability
+1. Open your own item.
+2. Choose “Add pickup availability.”
+3. Enter “First date” and “Last date.”
+4. Enter the optional daily time limits and meeting-location information offered by the form.
+5. Submit the availability form.
+6. Reopen the item details and verify that the proposed one-hour slots actually appear under “Pickup availability.”
+The range may span at most 93 days. The library branch's recorded opening hours and closures take priority over your preferences. The service excludes closed dates/times, past starts and overlaps with existing slots. Only full one-hour blocks are offered.
+A fictional branch open 9:00–12:00 on a future day could offer three one-hour blocks. A day with fewer than 60 usable minutes after your limits are applied offers no full slot. These are examples, not your branch's actual hours.
+Times follow the Koha server's local time. If you are viewing the site from another timezone, confirm the branch-local meeting time with staff or the other participant.
+If the form creates no slots
+Do not assume the branch is closed simply because the warning lists closure as a possibility. This version has an unresolved zero-slot problem, and blank recorded hours may also be involved.
+Check the dates and daily limits, then give staff the branch, range, time limits and exact warning. Staff can compare them with the real hours and closure calendar. Do not choose false dates, switch to an unrelated branch or repeatedly resubmit to force availability.
+An open slot means a meeting window is offered. It does not guarantee that the item is free for every possible loan period. A changed branch closure can also make a previously shown time unavailable.
+ 
+8. Acceptance, pickup, return and cancellation
+Understand the status
+•	Pending: the lender has not decided.
+•	Accepted: the lender agreed, but the pickup/checkout is not yet booked.
+•	Approved: a pickup has been booked and a Koha checkout created.
+•	Returned: the return was successfully recorded.
+•	Declined: the lender declined the request.
+•	Cancelled: the request was closed through the cancellation process.
+Lender: accept and schedule
+1. Open the incoming request in “My activity.”
+2. Review the borrower message and proposed dates; accept or decline as appropriate.
+3. If accepted, communicate the handoff plan with the borrower.
+4. Choose “Use an available pickup slot,” select a slot, enter an allowed loan length and add a note if needed.
+5. Choose “Book pickup & create checkout.”
+6. Verify the resulting pickup details, approved status and due date.
+Both people must have accepted the current required agreements before checkout. Koha may still reject a checkout because of circulation rules.
+Booking creates the checkout now, not at the future meeting time. Do not click merely to experiment with possible appointments. If it fails, check the recorded status with staff before trying actions that could affect circulation.
+Meet and return
+Use the library-approved public location. Confirm the item, accessories and visible condition together. Follow the lender's instructions and library policy; stop using an item if it appears unsafe.
+Return the item by the displayed due date and agree on the return handoff. After receiving it, the lender chooses “Mark returned” in “My activity.” The borrower cannot independently mark the lender's item returned in this workflow.
+If staff record the return directly in Koha, ask them to reconcile LibraryShare if it still shows an active loan. A message saying “I returned it” is not the same as a recorded check-in.
+Change the plan
+The lender can use “Reschedule pickup” on an approved request to choose another eligible slot. The due date is retained; rescheduling is not a renewal. Ask staff about any due-date concern rather than assuming the loan became longer.
+Either participant can cancel a pending or accepted request. Only the lender can cancel an approved checkout, and doing so checks the item in. Do not cancel an active loan to hide a disagreement or before resolving who physically has the item. Contact staff about missing, damaged or disputed items.
+ 
+9. Messages, notifications and wanted items
+Stay informed
+Use the request's message controls to discuss availability, included parts and handoff arrangements. Keep the conversation relevant and respectful. Never share your password, session cookie or financial information.
+Check “My activity” for notifications and current request states. “Mark all notifications read” and “Dismiss all notifications” affect notices, not the underlying request or loan. Do not assume the service will send email or text messages unless your library confirms that separately.
+Use “History” to inspect supported request events. If a button reports an error, look at the current status before clicking again.
+Post a wanted item
+1. Open “Wanted” and use the form to describe what you would like to borrow.
+2. Provide a useful title, category and description.
+3. Save the post and review any matches or replies.
+4. Close the post when it is no longer needed; use the supported reopen control if appropriate.
+Members can express interest and offer an item they own. A lender may connect an existing active listing or create a new listing for the wish. A matched or fulfilled wish is not automatically a loan; use the ordinary request, acceptance and pickup process.
+ 
+10. Profiles, recognition and estimated savings
+“My profile” shows your supported sharing record, reviews, lender/borrower recognition, badges and progress. “Community” includes community totals and current challenges. The library configures rewards; they are not cash or a guarantee that a lender will accept a request.
+Credits may be awarded for configured activities such as a first listing, completed lending, an on-time return, a fulfilled wish or a thank-you note. Read your credit ledger to understand the recorded changes. Contact staff about a suspected error rather than repeatedly repeating an action.
+Supported perks can include queue priority, a longer-loan allowance and a reliable-borrower indicator. These do not bypass account restrictions, required agreements or the lender's decision. New available listings are visible without earning credits first.
+Reviews and thanks
+Use the review action offered for a supported completed loan. Choose a rating, add a factual and respectful review, and attach permitted photos if useful. Use the separate thank-you/kudos action when available. Staff may moderate inappropriate content under library policy.
+Privacy preference
+In your profile, change “Include me in the public lender leaderboard” and choose “Save preference” if you do not want leaderboard inclusion. This does not erase transaction records or make your listings, reviews or Koha account anonymous.
+Estimated savings
+The displayed estimate is 50% of an item's current estimated value for each qualifying returned loan. A fictional $199 item contributes $99.50 when a loan is completed. This is an estimate of sharing value, not a payment or verified cash savings.
+The lender's personal estimate is associated with their completed lending loans. Older listings with “Not set” values do not contribute until a value is supplied. Editing an item's value can change historical estimates. CO2 savings are not calculated.
+Where offered, open your sharing certificate and choose “Print or save as PDF” or “Download certificate (HTML).” Keep the estimate disclaimer when sharing it, and do not publish another member's personal information without permission.
+ 
+11. Safety, help and common problems
+Safe use of the service
+Meet only in locations permitted by the library. Confirm accessibility needs in advance. Inspect the item and its accessories before using it, follow the applicable instructions, and do not use an item you believe is unsafe. Follow your library's rules for prohibited items and participants.
+Use “Report a concern” on a listing for a service-related concern and provide factual information. This is not an emergency channel. For immediate danger, contact local emergency services.
+For damage, loss, disputes or a missed return, contact staff and follow the approved local process. This guide does not promise insurance, refunds, replacements or a particular fee.
+I can sign in to Koha but not LibraryShare
+Make sure you are on the public catalog, not the staff site. Return through the public LibraryShare link after sign-in. If the problem persists, tell staff which page you opened and the exact message. Never send your password.
+An item is counted but I cannot see it
+Clear search filters and check the selected branch. The total available count differs from filtered search results. The item may also be paused or checked out. Fresh listings should not be hidden because you lack credits in this release; staff should investigate if the mismatch remains.
+The lender accepted, but there is no pickup
+Acceptance is not booking. The lender must select an eligible slot and complete the booking action. If no slots exist, the lender should ask staff to investigate hours and the known scheduling limitation.
+My request or photo submission seemed to fail
+Check “My activity” or the item details before repeating the submission. The listing or request may already exist even if a later step failed. Give staff the exact error and approximate time.
+I cannot mark an item returned
+The lender confirms return after receiving it. If staff checked it in through Koha, ask them to reconcile the service. Do not create another request or cancel an active loan just to clear the display.
+What should I send staff?
+Send the item/request reference if available, branch, action, approximate time and exact error. For pickup trouble, include first/last dates and daily limits. Use a redacted screenshot if helpful. Do not include passwords, library-card images, cookies or private account records.
+ 
+12. Your final checklists and glossary
+Before lending
+•	My item and description are accurate and permitted.
+•	My photos do not reveal private information.
+•	The estimated value is an estimate, not a borrowing charge.
+•	The branch, meeting location and actual pickup slots are correct.
+•	I understand that booking starts a Koha checkout immediately.
+Before borrowing
+•	I am signed in under my own account.
+•	I have read the listing and required agreements.
+•	The lender and I have agreed on the handoff.
+•	I can see the actual pickup and due date.
+•	I know how and where to return the item.
+After return
+•	The lender has received the item and any accessories.
+•	The supported return/check-in was recorded.
+•	Any unresolved issue has been reported to staff.
+•	I have signed out on shared devices.
+Glossary: OPAC means the public library catalog. A lender owns the listed item; a borrower requests it. A pickup slot is a meeting window. A checkout is the recorded Koha loan. A due date is when that loan is due back. Reconciliation updates LibraryShare from supported native Koha activity.
+Your library should supply the public entry, staff support contact, approved meeting locations and current service policies alongside this guide.

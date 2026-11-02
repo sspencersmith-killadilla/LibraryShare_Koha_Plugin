@@ -1,0 +1,38 @@
+{
+  "paths": {
+    "/extended/{area}": {
+      "get": {
+        "operationId": "libraryshareExtendedRead",
+        "parameters": [
+          {"name":"area","in":"path","type":"string","required":true},
+          {"name":"patron_id","in":"query","type":"integer","required":false},
+          {"name":"listing_id","in":"query","type":"integer","required":false},
+          {"name":"review_id","in":"query","type":"integer","required":false},
+          {"name":"request_id","in":"query","type":"integer","required":false}
+        ],
+        "produces":["application/json"],
+        "responses":{"200":{"description":"Requested data","schema":{"type":"object"}},"default":{"description":"Request error","schema":{"type":"object"}}},
+        "x-mojo-to":"Koha::Plugin::Com::LibraryShare::Controller::Extended#dispatch"
+      },
+      "post": {
+        "operationId": "libraryshareExtendedWrite",
+        "parameters": [
+          {"name":"area","in":"path","type":"string","required":true},
+          {"name":"body","in":"body","required":true,"schema":{"type":"object"}}
+        ],
+        "consumes":["application/json"],"produces":["application/json"],
+        "responses":{"200":{"description":"Operation completed","schema":{"type":"object"}},"default":{"description":"Request error","schema":{"type":"object"}}},
+        "x-mojo-to":"Koha::Plugin::Com::LibraryShare::Controller::Extended#dispatch"
+      }
+    },
+    "/media/{photo_id}": {
+      "get": {
+        "operationId":"libraryshareMedia",
+        "parameters":[{"name":"photo_id","in":"path","type":"integer","required":true}],
+        "produces":["image/jpeg","image/png","image/webp"],
+        "responses":{"200":{"description":"Photo","schema":{"type":"string","format":"binary"}},"404":{"description":"Not found"}},
+        "x-mojo-to":"Koha::Plugin::Com::LibraryShare::Controller::Extended#media"
+      }
+    }
+  }
+}

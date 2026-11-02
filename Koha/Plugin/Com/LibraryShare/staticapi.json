@@ -1,0 +1,71 @@
+{
+  "paths": {
+    "/extended.js": {
+      "get": {
+        "operationId":"libraryshareExtendedJs",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "produces":["application/javascript"],
+        "responses":{"200":{"description":"Extended application script"}},
+        "x-mojo-to":"Koha::Plugin::Com::LibraryShare::Controller::Static#extended_js"
+      }
+    },
+    "/staff.js": {
+      "get": {
+        "operationId":"libraryshareStaffJs",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "produces":["application/javascript"],
+        "responses":{"200":{"description":"Staff script"}},
+        "x-mojo-to":"Koha::Plugin::Com::LibraryShare::Controller::Static#staff_js"
+      }
+    },
+    "/extended.css": {
+      "get": {
+        "operationId":"libraryshareExtendedCss",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "produces":["text/css"],
+        "responses":{"200":{"description":"Extended stylesheet"}},
+        "x-mojo-to":"Koha::Plugin::Com::LibraryShare::Controller::Static#extended_css"
+      }
+    },
+    "/app.html": {
+      "get": {
+        "operationId": "libraryshareServeApp",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "summary": "Serve patron-facing LibraryShare app",
+        "produces": ["text/html"],
+        "responses": { "200": { "description": "HTML app" } },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::Static#app_html"
+      }
+    },
+    "/app.js": {
+      "get": {
+        "operationId": "libraryshareServeJavascript",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "summary": "Serve LibraryShare browser application",
+        "produces": ["application/javascript"],
+        "responses": { "200": { "description": "JavaScript asset" } },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::Static#app_js"
+      }
+    },
+    "/app.css": {
+      "get": {
+        "operationId": "libraryshareServeStylesheet",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "summary": "Serve LibraryShare styles",
+        "produces": ["text/css"],
+        "responses": { "200": { "description": "CSS asset" } },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::Static#app_css"
+      }
+    },
+    "/libraryshare-opac.js": {
+      "get": {
+        "operationId": "libraryshareServeOpacHook",
+        "parameters":[{"name":"v","in":"query","type":"string","required":false}],
+        "summary": "Serve OPAC launcher",
+        "produces": ["application/javascript"],
+        "responses": { "200": { "description": "JavaScript asset" } },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::Static#opac_js"
+      }
+    }
+  }
+}

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>LibraryShare</title>
+    <meta name="libraryshare-release" content="0.2.8">
+    <script>
+      (function () {
+        var failure="", ready=false;
+        function show() {
+          var node=document.getElementById("startup-status");
+          if(!node)return;
+          node.hidden=ready && !failure;
+          if(failure)node.textContent="LibraryShare 0.2.8 could not start: "+failure+" Open the full console and ask the Koha host to check failed asset/API requests, cache rules and security headers. No circulation action has been performed.";
+          if(window.parent!==window)window.parent.postMessage({type:"libraryshare-startup",version:"0.2.8",ready:ready&&!failure,error:failure},window.location.origin);
+        }
+        window.LSStartup={
+          fail:function(message){if(!failure)failure=message;show();},
+          ready:function(){ready=true;show();}
+        };
+        window.addEventListener("error",function(event){
+          var target=event.target;
+          if(target && /^(SCRIPT|LINK)$/.test(target.tagName)){
+            var path=new URL(target.src||target.href,location.href).pathname;
+            window.LSStartup.fail("A required file failed to load ("+path.split("/").pop()+").");
+          } else if(event.filename && event.filename.indexOf("/libraryshare/static/")>=0){
+            window.LSStartup.fail("A LibraryShare script failed during startup.");
+          }
+        },true);
+        document.addEventListener("DOMContentLoaded",show);
+        window.setTimeout(function(){if(!ready&&!failure)window.LSStartup.fail("Startup timed out. A script, stylesheet or API request may be blocked.");},45000);
+      })();
+    </script>
+    <link rel="stylesheet" href="/api/v1/contrib/libraryshare/static/app.css?v=0.2.8">
+    <link rel="stylesheet" href="/api/v1/contrib/libraryshare/static/extended.css?v=0.2.8">
+  </head>
+  <body>
+    <p id="startup-status" role="status" style="padding:16px;border:2px solid #b14236;background:#fff;color:#243b32;font:16px/1.5 sans-serif">Loading LibraryShare 0.2.8… If this message remains, scripts may be disabled or blocked. Open the full console and ask the Koha host to check asset requests and security/cache rules.</p>
+    <div id="libraryshare-app">
+      <header class="topbar">
+        <a class="brand" href="#" data-view="home" aria-label="LibraryShare home">
+          <span class="brand-mark" aria-hidden="true">LS</span>
+          <span><strong>LibraryShare</strong><small>Share useful things nearby</small></span>
+        </a>
+        <div class="top-actions">
+          <span id="session-label" class="session-label">Checking Koha session…</span>
+          <a id="koha-account" class="text-link" hidden>Koha account</a>
+        </div>
+      </header>
+      <main class="shell">
+        <section class="welcome">
+          <div>
+            <p class="eyebrow">A lending shelf for your community</p>
+            <h1>Borrow from a neighbor.<br><em>Share what you own.</em></h1>
+            <p class="lead">Items are listed by library members and tracked through Koha circulation.</p>
+          </div>
+          <div class="community-stat">
+            <span id="community-count">—</span>
+            <small>items available across all branches</small>
+          </div>
+        </section>
+
+        <nav class="tabs" aria-label="LibraryShare sections">
+          <button class="tab active" data-view="home">Browse items</button>
+          <button class="tab" data-view="wanted">Wanted</button>
+          <button class="tab" data-view="dashboard">My activity</button>
+          <button class="tab" data-view="community">Community</button>
+           <button class="tab" data-view="profile">My profile</button>
+           <button class="tab" data-view="documents">Help &amp; agreements</button>
+           <button class="tab" data-view="admin" id="staff-tab" hidden>Staff console</button>
+          <button class="tab tab-strong" data-view="add">List an item</button>
+        </nav>
+
+        <div id="notice" class="notice" role="status" hidden></div>
+
+        <section id="view-home" class="view">
+          <div class="section-head">
+            <div><p class="eyebrow">Available to borrow</p><h2>Find something useful</h2></div>
+            <form id="search-form" class="search"><label class="sr-only" for="search-query">Search items</label><input id="search-query" type="search" placeholder="Search items, categories, or makers"><button class="button button-dark">Search</button></form>
+          </div>
+          <form id="facet-form" class="filters" aria-label="Filter listings">
+            <label>Category<select name="category"><option value="">All categories</option></select></label>
+            <label>Branch<select name="branch"><option value="">All branches</option></select></label>
+            <label>Condition<select name="condition"><option value="">Any condition</option><option value="excellent">Excellent</option><option value="good">Good</option><option value="fair">Fair</option></select></label>
+            <label>Available from<input type="date" name="available_from"></label>
+            <label>Available until<input type="date" name="available_to"></label>
+            <label>Pickup location<input type="search" name="location" maxlength="200" placeholder="Neighborhood or meeting place"></label>
+            <button class="button button-light">Apply filters</button>
+            <button type="button" class="button button-light" data-action="reset-filters">Clear</button>
+          </form>
+          <p id="browse-results-count" class="fine-print" role="status"></p>
+          <div id="listing-grid" class="listing-grid"><div class="loading">Loading listings…</div></div>
+        </section>
+
+        <section id="view-wanted" class="view" hidden>
+          <div class="section-head">
+            <div><p class="eyebrow">Community wishlist</p><h2>What neighbors need</h2><p class="muted">Post a request or see if you can lend what someone is looking for.</p></div>
+          </div>
+          <form id="wanted-form" class="inline-form">
+            <label>Item name<input name="title" required maxlength="200" placeholder="e.g. A sewing machine"></label>
+            <label>Category<input name="category" maxlength="80" placeholder="Optional"></label>
+            <label class="wide">Details<input name="description" maxlength="1000" placeholder="Anything that would help a lender match your request"></label>
+            <button class="button button-dark">Post wanted item</button>
+          </form>
+          <div id="wanted-list" class="wanted-list"></div>
+          <h3 class="subhead">Matches for your wishlist</h3>
+          <div id="wanted-matches" class="wanted-list"></div>
+        </section>
+
+        <section id="view-dashboard" class="view" hidden>
+          <div class="section-head">
+            <div><p class="eyebrow">Your LibraryShare</p><h2>Requests and listings</h2><p class="muted">Your library card is your LibraryShare account.</p></div>
+            <button id="refresh-dashboard" class="button button-light">Refresh</button>
+          </div>
+          <div id="dashboard-stats" class="stats-row"></div>
+          <div class="toolbar"><button class="button button-light" data-view="profile">My journey &amp; credits</button><button class="button button-light" data-action="notifications-bulk" data-mode="read">Mark all notifications read</button><button class="button button-light" data-action="notifications-bulk" data-mode="dismiss">Dismiss all notifications</button></div>
+          <h3 class="subhead">Borrowing and lending requests</h3>
+          <div id="request-list" class="request-list"></div>
+          <h3 class="subhead">Notifications</h3>
+          <div id="notifications-list" class="request-list"></div>
+          <h3 class="subhead">Your listings</h3>
+          <div id="my-listings" class="my-listings"></div>
+          <h3 class="subhead">Your wanted posts</h3>
+          <div id="my-wanted" class="wanted-list"></div>
+        </section>
+
+        <section id="view-community" class="view" hidden>
+          <div class="section-head"><div><p class="eyebrow">Shared locally</p><h2>Community impact</h2><p class="muted">Lending activity and estimates from this Koha community.</p></div></div>
+          <div id="community-stats" class="stats-row"></div>
+          <div class="community-columns">
+            <section><h3 class="subhead">Most shared categories</h3><div id="category-list" class="wanted-list"></div></section>
+            <section><h3 class="subhead">Lender recognition</h3><div id="leaderboard-list" class="wanted-list"></div></section>
+          </div>
+          <h3 class="subhead">Current challenges</h3>
+          <div id="challenge-list" class="wanted-list"></div>
+          <div id="personal-impact" class="personal-impact"></div>
+        </section>
+
+        <section id="view-add" class="view" hidden>
+          <div class="section-head"><div><p class="eyebrow">Add to the lending shelf</p><h2>List an item you own</h2><p class="muted">A Koha bibliographic record and circulation item will be created for this listing.</p></div></div>
+          <form id="listing-form" class="form-grid">
+            <label>Item name<input name="title" required maxlength="200" placeholder="e.g. 10-inch circular saw"></label>
+            <label>Maker or author<input name="author" maxlength="200" placeholder="Optional"></label>
+            <label>Category<input name="category" required maxlength="80" placeholder="Tools, games, kitchen…"></label>
+            <label>Condition<select name="condition"><option value="good">Good</option><option value="excellent">Excellent</option><option value="fair">Fair</option></select></label>
+            <label>Pickup branch<select name="pickup_branch" id="branch-select"></select></label>
+            <label>Pickup location<input name="pickup_location" maxlength="200" placeholder="A public place at or near the branch"></label>
+            <label>Loan length (days)<input name="default_loan_days" type="number" min="1" max="90" value="14" required></label>
+            <label>Estimated item value ($)<input name="estimated_value" type="number" min="0" max="99999999.99" step="0.01" required></label>
+            <p class="wide form-hint">An estimate of the item’s value, not a borrowing fee. Each completed loan counts 50% of this value as estimated savings.</p>
+            <label class="wide">Description<textarea name="description" rows="4" placeholder="Describe the item and anything a borrower should know"></textarea></label>
+            <label class="wide">Item photos<input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><span class="form-hint">JPEG, PNG or WebP. Up to 5 MB per photo. Only upload photos you have permission to share.</span></label>
+            <div class="wide form-actions"><button class="button button-dark">Create listing</button><p class="fine-print">By listing, you confirm you own the item and agree to arrange a safe, public handoff.</p></div>
+          </form>
+        </section>
+
+        <section id="view-profile" class="view" hidden></section>
+        <section id="view-documents" class="view" hidden></section>
+        <section id="view-admin" class="view" hidden></section>
+
+        <section id="view-login" class="view login-callout" hidden>
+          <p class="eyebrow">Use your Koha account</p><h2>Sign in through your library</h2>
+          <p>LibraryShare uses the active OPAC session. Sign in to Koha, then return to this page to request, list, or manage items.</p>
+          <a id="koha-sign-in" class="button button-dark" hidden>Open Koha sign-in</a>
+          <p id="login-guidance" role="status">Connecting to Koha…</p>
+        </section>
+      </main>
+      <footer class="footer"><span>LibraryShare</span><button class="link-button" data-view="documents">Help, terms &amp; lending waiver</button><span>Free sharing, tracked with Koha circulation</span></footer>
+    </div>
+    <script defer src="/api/v1/contrib/libraryshare/static/extended.js?v=0.2.8"></script>
+    <script defer src="/api/v1/contrib/libraryshare/static/staff.js?v=0.2.8"></script>
+    <script defer src="/api/v1/contrib/libraryshare/static/app.js?v=0.2.8"></script>
+  </body>
+</html>

@@ -1,0 +1,445 @@
+{
+  "paths": {
+    "/bootstrap": {
+      "get": {
+        "operationId": "libraryshareBootstrap",
+        "summary": "Get session and community overview",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "LibraryShare bootstrap data", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#bootstrap"
+      }
+    },
+    "/listings": {
+      "get": {
+        "operationId": "libraryshareListListings",
+        "summary": "Search available patron-owned items",
+        "parameters": [
+          { "name": "q", "in": "query", "type": "string", "required": false, "description": "Search title, author, or category" },
+          {"name":"category","in":"query","type":"string","required":false},
+          {"name":"branch","in":"query","type":"string","required":false},
+          {"name":"condition","in":"query","type":"string","required":false}
+          ,{"name":"location","in":"query","type":"string","required":false}
+          ,{"name":"available_from","in":"query","type":"string","required":false}
+          ,{"name":"available_to","in":"query","type":"string","required":false}
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Listings", "schema": { "type": "object" } },
+          "500": { "description": "Database error", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#listings"
+      },
+      "post": {
+        "operationId": "libraryshareCreateListing",
+        "summary": "Create a listing and Koha item; estimated_value is required, 0 to 99999999.99 with at most two decimals",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Listing created", "schema": { "type": "object" } },
+          "400": { "description": "Invalid listing", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } },
+          "500": { "description": "Koha item creation failed", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#create_listing"
+      }
+    },
+    "/listings/{listing_id}": {
+      "get": {
+        "operationId": "libraryshareGetListing",
+        "summary": "Get a patron item listing",
+        "parameters": [
+          { "name": "listing_id", "in": "path", "type": "integer", "required": true, "description": "Listing identifier" }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Listing", "schema": { "type": "object" } },
+          "400": { "description": "Invalid listing id", "schema": { "type": "object" } },
+          "404": { "description": "Listing not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#listing_detail"
+      },
+      "post": {
+        "operationId": "libraryshareUpdateListing",
+        "summary": "Edit, pause, resume, or remove a listing; optional estimated_value must be 0 to 99999999.99 with at most two decimals",
+        "parameters": [
+          { "name": "listing_id", "in": "path", "type": "integer", "required": true, "description": "Listing identifier" },
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Listing updated", "schema": { "type": "object" } },
+          "400": { "description": "Invalid listing update", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Only the owner can edit", "schema": { "type": "object" } },
+          "404": { "description": "Listing not found", "schema": { "type": "object" } },
+          "409": { "description": "Listing has an active Koha checkout", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#update_listing"
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "operationId": "libraryshareDashboard",
+        "summary": "Get the signed-in patron dashboard",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Patron activity", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#dashboard"
+      }
+    },
+    "/requests": {
+      "post": {
+        "operationId": "libraryshareCreateRequest",
+        "summary": "Request to borrow a listing",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Request created", "schema": { "type": "object" } },
+          "400": { "description": "Invalid request", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Patron cannot borrow", "schema": { "type": "object" } },
+          "404": { "description": "Listing unavailable", "schema": { "type": "object" } },
+          "409": { "description": "Duplicate active request", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#create_request"
+      }
+    },
+    "/requests/{request_id}/{request_action}": {
+      "post": {
+        "operationId": "libraryshareRequestAction",
+        "summary": "Accept, decline, cancel, schedule, or return a loan",
+        "parameters": [
+          { "name": "request_id", "in": "path", "type": "integer", "required": true, "description": "Borrow request identifier" },
+          { "name": "request_action", "in": "path", "type": "string", "required": true, "description": "Action: accept, decline, cancel, schedule, reschedule, or return" },
+          { "name": "body", "in": "body", "required": false, "schema": { "type": "object" } }
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Request updated", "schema": { "type": "object" } },
+          "400": { "description": "Invalid action", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Not allowed", "schema": { "type": "object" } },
+          "404": { "description": "Request not found", "schema": { "type": "object" } },
+          "409": { "description": "Request conflict", "schema": { "type": "object" } },
+          "502": { "description": "Koha circulation action failed", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#request_action"
+      }
+    },
+    "/slots": {
+      "get": {
+        "operationId": "libraryshareListPickupSlots",
+        "summary": "List available pickup times for an item",
+        "parameters": [
+          { "name": "listing_id", "in": "query", "type": "integer", "required": true, "description": "Listing identifier" }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Open pickup slots", "schema": { "type": "object" } },
+          "400": { "description": "Invalid listing", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#slots"
+      }
+    },
+    "/listings/{listing_id}/slots": {
+      "post": {
+        "operationId": "libraryshareCreatePickupSlot",
+        "summary": "Generate one-hour pickup slots within branch hours and an inclusive date range",
+        "parameters": [
+          { "name": "listing_id", "in": "path", "type": "integer", "required": true, "description": "Listing identifier" },
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object", "required": ["date_from","date_to","location"], "properties": { "date_from": {"type":"string","format":"date"}, "date_to": {"type":"string","format":"date"}, "daily_start": {"type":"string"}, "daily_end": {"type":"string"}, "location": {"type":"string","minLength":1,"maxLength":200} } } }
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Pickup slot created", "schema": { "type": "object" } },
+          "400": { "description": "Invalid slot", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Only the listing owner may add slots", "schema": { "type": "object" } },
+          "404": { "description": "Listing not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#create_slot"
+      }
+    },
+    "/wanted": {
+      "get": {
+        "operationId": "libraryshareListWanted",
+        "parameters":[{"name":"status","in":"query","type":"string","required":false}],
+        "summary": "List community wanted items",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Wanted items", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#wanted"
+      },
+      "post": {
+        "operationId": "libraryshareCreateWanted",
+        "summary": "Post a wanted item",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Wanted item created", "schema": { "type": "object" } },
+          "400": { "description": "Invalid wanted item", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#create_wanted"
+      }
+    },
+    "/wanted/{wanted_id}/interest": {
+      "post": {
+        "operationId": "libraryshareToggleWantedInterest",
+        "summary": "Express or remove interest in a wanted item",
+        "parameters": [
+          { "name": "wanted_id", "in": "path", "type": "integer", "required": true, "description": "Wanted-item identifier" },
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Interest updated", "schema": { "type": "object" } },
+          "400": { "description": "Invalid request", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "404": { "description": "Wanted item not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#wanted_interest"
+      }
+    },
+    "/wanted/{wanted_id}/fulfil": {
+      "post": {
+        "operationId": "libraryshareFulfilWanted",
+        "summary": "Mark a wanted item fulfilled",
+        "parameters": [
+          { "name": "wanted_id", "in": "path", "type": "integer", "required": true, "description": "Wanted-item identifier" }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Wanted item fulfilled", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Only the requester can fulfil it", "schema": { "type": "object" } },
+          "404": { "description": "Wanted item not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#fulfil_wanted"
+      }
+    },
+    "/reviews": {
+      "post": {
+        "operationId": "libraryshareCreateReview",
+        "summary": "Review a completed loan",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Review saved", "schema": { "type": "object" } },
+          "400": { "description": "Invalid review", "schema": { "type": "object" } },
+          "401": { "description": "Koha patron sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Not a loan participant", "schema": { "type": "object" } },
+          "404": { "description": "Returned loan not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#review"
+      }
+    },
+    "/patrons/{borrowernumber}/reviews": {
+      "get": {
+        "operationId": "libraryshareListReviews",
+        "summary": "List reviews for a patron",
+        "parameters": [
+          { "name": "borrowernumber", "in": "path", "type": "integer", "required": true, "description": "Koha patron identifier" }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Patron reviews", "schema": { "type": "object" } },
+          "400": { "description": "Invalid patron id", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#list_reviews"
+      }
+    },
+    "/messages": {
+      "get": {
+        "operationId": "libraryshareListMessages",
+        "summary": "Read messages for a borrow request",
+        "parameters": [
+          { "name": "request_id", "in": "query", "type": "integer", "required": true, "description": "Borrow request identifier" }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Request messages", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Not a request participant", "schema": { "type": "object" } },
+          "404": { "description": "Request not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#messages"
+      },
+      "post": {
+        "operationId": "librarysharePostMessage",
+        "summary": "Send a message about a borrow request",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Message sent", "schema": { "type": "object" } },
+          "400": { "description": "Invalid message", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Not a request participant", "schema": { "type": "object" } },
+          "404": { "description": "Request not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#messages"
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "libraryshareNotifications",
+        "summary": "List notifications for the signed-in patron",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Patron notifications", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#notifications"
+      }
+    },
+    "/notifications/{notification_id}/read": {
+      "post": {
+        "operationId": "libraryshareMarkNotificationRead",
+        "summary": "Mark a patron notification as read",
+        "parameters": [
+          { "name": "notification_id", "in": "path", "type": "integer", "required": true, "description": "Notification identifier" }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Notification marked read", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "400": { "description": "Invalid notification id", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#notification_read"
+      }
+    },
+    "/community": {
+      "get": {
+        "operationId": "libraryshareCommunity",
+        "summary": "Get community totals and lending trends",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Community statistics", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#community"
+      }
+    },
+    "/leaderboard": {
+      "get": {
+        "operationId": "libraryshareLeaderboard",
+        "summary": "List community lender standings",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Leaderboard", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#leaderboard"
+      }
+    },
+    "/challenges": {
+      "get": {
+        "operationId": "libraryshareChallenges",
+        "summary": "List active community lending challenges",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Active challenges and patron progress", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#challenges"
+      }
+    },
+    "/impact": {
+      "get": {
+        "operationId": "libraryshareImpact",
+        "summary": "Get personal and community impact totals",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Impact estimates", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#impact"
+      }
+    },
+    "/kudos": {
+      "post": {
+        "operationId": "libraryshareCreateKudos",
+        "summary": "Send a thank-you note after a loan",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Thank-you note saved", "schema": { "type": "object" } },
+          "400": { "description": "Invalid note", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Only the borrower can thank the lender", "schema": { "type": "object" } },
+          "404": { "description": "Returned loan not found", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#kudos"
+      }
+    },
+    "/legal/accept": {
+      "post": {
+        "operationId": "libraryshareAcceptLegal",
+        "summary": "Record agreement acceptance for a patron",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": { "description": "Acceptance recorded", "schema": { "type": "object" } },
+          "400": { "description": "Document or version missing", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#accept_legal"
+      }
+    },
+    "/admin/settings": {
+      "get": {
+        "operationId": "libraryshareGetAdminSettings",
+        "summary": "Read LibraryShare Koha settings",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Plugin settings", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Koha plugin permission required", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#admin_settings"
+      },
+      "post": {
+        "operationId": "libraryshareSaveAdminSettings",
+        "summary": "Save LibraryShare Koha settings",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object" } }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "Settings saved", "schema": { "type": "object" } },
+          "400": { "description": "Invalid setting", "schema": { "type": "object" } },
+          "401": { "description": "Sign-in required", "schema": { "type": "object" } },
+          "403": { "description": "Koha plugin permission required", "schema": { "type": "object" } }
+        },
+        "x-mojo-to": "Koha::Plugin::Com::LibraryShare::Controller::API#admin_settings"
+      }
+    }
+  }
+}

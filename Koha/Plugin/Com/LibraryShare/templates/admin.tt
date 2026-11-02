@@ -1,0 +1,75 @@
+[% USE Koha %]
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>LibraryShare staff workbench</title>
+  <link rel="stylesheet" href="[% api_base | html %]/static/app.css?v=[% plugin_version | html %]">
+  <link rel="stylesheet" href="[% api_base | html %]/static/extended.css?v=[% plugin_version | html %]">
+  <style>
+    body{font:16px/1.6 system-ui,sans-serif;margin:24px;color:#243b32;background:#f8faf7}.staff-frame{display:block;width:100%;min-height:1050px;border:1px solid #cbd4c6;border-radius:14px;background:#f4f3ed}.staff-frame[hidden]{display:none}.staff-page{max-width:1420px}.staff-page>p{max-width:75ch;line-height:1.7;color:#59675f}.staff-page h1{color:#1c4d42}.staff-frame-note{font-size:12px}.route-status{padding:16px;border:1px solid #cbd4c6;background:#fff}.route-status[data-error="true"]{border-color:#b14236;color:#7b271e}.staff-launch{display:flex;gap:16px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <main class="staff-page">
+    <p class="eyebrow">Koha / Community lending</p>
+    <h1>LibraryShare staff workbench</h1>
+    <p>Moderate community activity, publish lending documents, configure recognition, and check the local Koha connection. The console below uses your current Koha session and verifies permissions on every operation.</p>
+    <nav class="staff-launch" aria-label="LibraryShare staff shortcuts">
+      <a class="button button-dark" href="[% api_base | html %]/static/app.html?v=[% plugin_version | html %]#admin" target="_blank" rel="noopener">Open full staff console</a>
+      [% IF public_url %]
+      <a class="button button-light" href="[% public_url | html %]" target="_blank" rel="noopener">Open public LibraryShare</a>
+      [% ELSE %]
+      <span role="alert">Set OPACBaseURL in Koha system preferences to enable the public LibraryShare link.</span>
+      [% END %]
+      <a class="button button-light" href="/cgi-bin/koha/admin/itemtypes.pl">Manage Koha item types</a>
+    </nav>
+    <p class="staff-frame-note">If your installation prevents embedded pages, use “Open full staff console”. Staff need an active Koha session with LibraryShare admin or plugin-management permission; role changes always require Koha plugin-management permission.</p>
+    <p class="route-status" id="route-status" role="status">Loading LibraryShare [% plugin_version | html %]… If this message remains, JavaScript or embedded pages may be blocked. Use “Open full staff console” and ask the host to inspect failed requests.</p>
+    <iframe hidden class="staff-frame" data-src="[% api_base | html %]/static/app.html?v=[% plugin_version | html %]#admin" title="LibraryShare moderation, configuration and analytics console"></iframe>
+    <noscript>JavaScript is required for the LibraryShare console.</noscript>
+    <script>
+    (async function () {
+      var status=document.getElementById('route-status');
+      var frame=document.querySelector('.staff-frame');
+      var ready=false, failed=false;
+      window.addEventListener('message',function(event){
+        if(event.origin!==location.origin || event.source!==frame.contentWindow || !event.data || event.data.type!=='libraryshare-startup')return;
+        if(event.data.version!=='[% plugin_version | html %]'){
+          failed=true;status.dataset.error='true';status.hidden=false;status.textContent='A different LibraryShare release was served. Ask the host to purge the staging plugin asset cache and reload its API workers.';return;
+        }
+        ready=event.data.ready===true;
+        status.hidden=ready;
+        if(event.data.error){failed=true;status.dataset.error='true';status.textContent='Embedded console failed: '+event.data.error+' Open the full console and ask the host to inspect cache and security rules.';}
+      });
+      window.setTimeout(function(){
+        if(!ready&&!failed){status.hidden=false;status.dataset.error='true';status.textContent='LibraryShare did not confirm startup. Open the full console; ask the host to inspect blocked iframe/assets, cache rules, and API worker versions. No circulation action has been performed.';}
+      },50000);
+      try {
+        var url=new URL(frame.dataset.src,window.location.href);
+        url.pathname=url.pathname.replace(/\/static\/app\.html$/, '/bootstrap');
+        url.hash='';
+        url.search='';
+        var controller=new AbortController();
+        var timeout=setTimeout(function(){controller.abort();},20000);
+        var response=await fetch(url.href,{credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});
+        clearTimeout(timeout);
+        if (!response.ok) throw new Error('HTTP '+response.status);
+        var data=await response.json();
+        if (!data || typeof data !== 'object') throw new Error('Unexpected API response');
+        frame.src=frame.dataset.src;
+        frame.hidden=false;
+        status.textContent='API responded. Waiting for LibraryShare [% plugin_version | html %] assets and startup…';
+      } catch (error) {
+        failed=true;
+        status.dataset.error='true';
+        status.textContent='LibraryShare API is unavailable ('+error.message+'). This workbench expects version [% plugin_version | html %]. If this follows an upgrade, ask the Koha host to reload the staging Plack/API workers and inspect route-loading errors. No circulation action has been performed.';
+      }
+    })();
+    </script>
+    <p class="audit-note">Production demo reset is intentionally excluded. Resetting real Koha circulation records is unsafe; use safe fixture tests in a non-production installation instead.</p>
+  </main>
+</body>
+</html>
